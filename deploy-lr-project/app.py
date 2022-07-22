@@ -5,11 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from glob import glob
 
+
 app = Flask(__name__)  # create an app instance
 
 
 @app.route('/', methods=['GET', 'POST'])  # at the end point /
 def index():
+    global file
     if request.method == 'POST':
         file = request.files['csvfile']
         if not os.path.isdir('static'):
@@ -26,14 +28,16 @@ def index():
         data = pd.read_csv('static/data.csv')  # возможно прийдется взять др. имя - file.filename
 
         plt.plot(data.loc[0], data.loc[1])
-        # sns.pairplot(data, hue=data.loc[0])
         imagepath = os.path.join('static', 'image' + '.png')
         plt.savefig(imagepath)
-
-        if os.path.isfile(path+'data.csv'):
-            os.remove(path+'data.csv') # +добавить удаление графика после показа
+        print(imagepath, '+++++++++++++++++++++++')
+        if os.path.isfile(path + 'data.csv'):
+            print('=======================================================================')
+            os.remove(path + 'data.csv')  # +добавить удаление графика после показа
         return render_template('index.html', image=imagepath)
     return render_template('index.html')
+
+
 # @app.route('/home', methods=['GET', 'POST'])
 # def home():
 #     if request.method == 'POST':
